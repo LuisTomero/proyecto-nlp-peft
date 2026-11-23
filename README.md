@@ -13,6 +13,7 @@ Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exa
 | `v0_cruda/` | Primera versión de la IA: el prompt, la respuesta y el script, sin modificaciones |
 | `v0_ejecucion/` | Notebook para correr la versión cruda en Colab |
 | `v1_tfidf/` | Versión simplificada: TF-IDF + vecinos más cercanos |
+| `v2_beto_lora/` | BETO + LoRA: experimentos y notebook para Colab (resultados pendientes) |
 
 ## Versión cruda (v0)
 
