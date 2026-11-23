@@ -21,8 +21,11 @@ Se obtuvo con un solo prompt en claude.ai, en un chat nuevo y sin adjuntar archi
 el archivo descargado, sin cambios (SHA-256 `215c5af7130dbeba90d0dba564c7454af423d3d51af96e300a703c8a3e0a0206`).
 Según su respuesta, Claude lo probó por su cuenta con datos sintéticos antes de entregarlo.
 
-El notebook de `v0_ejecucion/` es el mismo script separado en celdas, con un solo cambio:
+El notebook `v0_cruda_colab.ipynb` es el mismo script separado en celdas, con un solo cambio:
 `PARTICIONES_A_EJECUTAR = [0]` en vez de las cinco, por el límite de tiempo de Colab gratuito.
+
+`v0_cruda_kaggle.ipynb` agrega una celda inicial (una sola GPU y copia del CSV) y `USAR_DRIVE = False`; se arma con
+`armar_kaggle.py`.
 
 ## Versión simplificada (v1)
 
