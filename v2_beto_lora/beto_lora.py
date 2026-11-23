@@ -1,6 +1,7 @@
 # %% [1] Instalación e importaciones
 # v2: BETO (BERT en español) + LoRA, a partir de la sección 7 del notebook de la Clase 11.
-# Uso: Colab con GPU, y cpn120_particion.csv y CPN120.csv en "Mi unidad" de Google Drive.
+# Uso en Colab: GPU T4, y CPN120.csv en "Mi unidad" de Google Drive.
+# Uso en Kaggle: GPU T4, Internet activado, y un dataset con CPN120.csv agregado al notebook.
 import importlib.util
 import subprocess
 import sys
@@ -8,6 +9,11 @@ import sys
 if importlib.util.find_spec("peft") is None:
     subprocess.run([sys.executable, "-m", "pip", "install", "-q", "peft"], check=True)
 
+# Colab trae un torchao antiguo que hace fallar a peft; aquí no se usa
+subprocess.run([sys.executable, "-m", "pip", "uninstall", "-y", "-q", "torchao"], check=False)
+
+import glob
+import hashlib
 import json
 import os
 import random
@@ -30,14 +36,26 @@ print("torch", torch.__version__, "| transformers", transformers.__version__, "|
 
 # %% [2] Datos
 CARPETA_DATOS, CARPETA_RES = ".", "resultados_v2"
-if importlib.util.find_spec("google") is not None and importlib.util.find_spec("google.colab") is not None:
+KAGGLE = "/kaggle"
+if "KAGGLE_KERNEL_RUN_TYPE" in os.environ:      # Kaggle (Colab también tiene /kaggle/input, no sirve para distinguirlos)
+    encontrados = glob.glob(f"{KAGGLE}/input/**/CPN120.csv", recursive=True)
+    if not encontrados:
+        raise FileNotFoundError("Agrega al notebook el dataset con CPN120.csv (Add Input).")
+    CARPETA_DATOS = os.path.dirname(encontrados[0])
+    CARPETA_RES = f"{KAGGLE}/working/resultados_v2"
+elif importlib.util.find_spec("google") is not None and importlib.util.find_spec("google.colab") is not None:
     from google.colab import drive
     drive.mount("/content/drive")
     CARPETA_DATOS = "/content/drive/MyDrive"
     CARPETA_RES = "/content/drive/MyDrive/resultados_v2"   # si se corta la sesión, no se pierde lo hecho
 os.makedirs(CARPETA_RES, exist_ok=True)
 
-datos = pd.read_csv(f"{CARPETA_DATOS}/cpn120_particion.csv", dtype=str, keep_default_na=False)
+# La partición se arma aquí con datos/preparar_datos.py y se verifica que sea la misma del repositorio
+datos = particionar(pd.read_csv(f"{CARPETA_DATOS}/CPN120.csv", dtype=str, keep_default_na=False))
+datos = datos[["Concepto", "Respuesta", "Codigo", "parte"]]
+HUELLA = "df77fa49229886e1fa404dfe3592f35a1d2fc31d6172c961fda8cc7c7afae081"
+assert hashlib.sha256(datos.to_csv(index=False, lineterminator="\n").encode("utf-8")).hexdigest() == HUELLA, \
+    "La partición no es la misma del repositorio"
 ent = datos[datos["parte"] == "entrenamiento"].reset_index(drop=True)
 val = datos[datos["parte"] == "validacion"].reset_index(drop=True)
 pru = datos[datos["parte"] == "prueba"].reset_index(drop=True)

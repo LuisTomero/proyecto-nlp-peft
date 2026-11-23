@@ -35,16 +35,21 @@ def quitar_duplicados(df):
     return unicos
 
 
-def main():
-    df = pd.read_csv(CARPETA / "CPN120.csv", dtype=str, keep_default_na=False)
+def particionar(df):
+    """Filas únicas con su parte: 70 % entrenamiento, 15 % validación y 15 % prueba."""
     unicos = quitar_duplicados(df)
-    # 70 % entrenamiento, 15 % validación, 15 % prueba
     resto, prueba = train_test_split(unicos.index, test_size=0.15, random_state=SEMILLA)
     ent, val = train_test_split(resto, test_size=0.15 / 0.85, random_state=SEMILLA)
     unicos["parte"] = ""
     unicos.loc[ent, "parte"] = "entrenamiento"
     unicos.loc[val, "parte"] = "validacion"
     unicos.loc[prueba, "parte"] = "prueba"
+    return unicos
+
+
+def main():
+    df = pd.read_csv(CARPETA / "CPN120.csv", dtype=str, keep_default_na=False)
+    unicos = particionar(df)
     unicos[["Concepto", "Respuesta", "Codigo", "parte"]].to_csv(
         CARPETA / "cpn120_particion.csv", index=False, lineterminator="\n")
 
