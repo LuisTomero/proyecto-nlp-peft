@@ -9,9 +9,10 @@ Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exa
 
 | Carpeta | Qué contiene |
 |---|---|
-| `datos/` | `CPN120.csv`, entregado por el curso |
+| `datos/` | `CPN120.csv`, entregado por el curso, y la partición sin duplicados (`preparar_datos.py`) |
 | `v0_cruda/` | Primera versión de la IA: el prompt, la respuesta y el script, sin modificaciones |
 | `v0_ejecucion/` | Notebook para correr la versión cruda en Colab |
+| `v1_tfidf/` | Versión simplificada: TF-IDF + vecinos más cercanos |
 
 ## Versión cruda (v0)
 
@@ -21,6 +22,19 @@ Según su respuesta, Claude lo probó por su cuenta con datos sintéticos antes 
 
 El notebook de `v0_ejecucion/` es el mismo script separado en celdas, con un solo cambio:
 `PARTICIONES_A_EJECUTAR = [0]` en vez de las cinco, por el límite de tiempo de Colab gratuito.
+
+## Versión simplificada (v1)
+
+`python datos/preparar_datos.py` deja una fila por par concepto + respuesta (20.608 de 31.864) y fija
+entrenamiento, validación y prueba sin pares repetidos entre ellos. `python v1_tfidf/tfidf_knn.py` reproduce:
+
+| TF-IDF + kNN | Exactitud |
+|---|---|
+| Prueba sin duplicados | 0,583 |
+| Prueba sin duplicados, solo respuesta | 0,534 |
+| 5 particiones, todas las filas (pares repetidos entre partes) | 0,740 |
+
+No es comparable directamente con el 0,582 del paper: usa 27.138 propiedades y el CSV del curso trae 31.864 filas.
 
 ## Uso de IA
 
