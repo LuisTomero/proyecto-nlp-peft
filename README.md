@@ -13,7 +13,7 @@ Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exa
 | `v0_cruda/` | Primera versión de la IA: el prompt, la respuesta y el script, sin modificaciones |
 | `v0_ejecucion/` | Notebook para correr la versión cruda en Colab |
 | `v1_tfidf/` | Versión simplificada: TF-IDF + vecinos más cercanos |
-| `v2_beto_lora/` | BETO + LoRA: experimentos y notebook para Colab (resultados pendientes) |
+| `v2_beto_lora/` | BETO + LoRA: experimentos, notebook para Colab y `resultados.md` |
 
 ## Versión cruda (v0)
 
@@ -39,6 +39,19 @@ entrenamiento, validación y prueba sin pares repetidos entre ellos. `python v1_
 | 5 particiones, todas las filas (pares repetidos entre partes) | 0,740 |
 
 No es comparable directamente con el 0,582 del paper: usa 27.138 propiedades y el CSV del curso trae 31.864 filas.
+
+## BETO + LoRA (v2)
+
+| Evaluación | TF-IDF + kNN (v1) | BETO + LoRA (v2) |
+|---|---|---|
+| Prueba sin duplicados | 0,583 | **0,653 ± 0,001** (3 semillas) |
+| 5 particiones, todas las filas (pares repetidos entre partes) | 0,740 | 0,777 ± 0,004 |
+
+Detalle, experimentos y limitaciones en `v2_beto_lora/resultados.md`.
+
+## Pendiente
+
+La versión cruda (v0) todavía no tiene métricas: su entrenamiento en Colab se cortó antes de terminar la partición 0.
 
 ## Uso de IA
 
