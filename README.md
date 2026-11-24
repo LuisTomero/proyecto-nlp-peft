@@ -2,6 +2,8 @@
 
 Grupo 8 · Procesamiento del Lenguaje Natural · Universidad Adolfo Ibáñez
 
+**Integrantes:** Ignacio Subiabre y Luis Meneghello
+
 Dado un concepto y una propiedad escrita por una persona, predecir su código entre 1.785 posibles.
 Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exactitud en CPN120.
 
@@ -15,6 +17,7 @@ Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exa
 | `v1_tfidf/` | Versión simplificada: TF-IDF + vecinos más cercanos |
 | `v2_beto_lora/` | BETO + LoRA: experimentos, notebook para Colab y `resultados.md` |
 | `v3_qwen_qlora/` | Qwen3-4B + QLoRA con el error de v0 corregido y datos limpios, y `resultados.md` |
+| `EXPLICACION.md` | Qué hace cada archivo y qué se cambió entre versiones |
 
 ## Versión cruda (v0)
 
@@ -66,6 +69,23 @@ los pares nuevos (`v0_ejecucion/resultados.md`). v3 es ese modelo con el error c
 
 El 0,582 de Ramos et al. (2025) no es directamente comparable: usa 27.138 propiedades (el CSV del curso trae 31.864 filas), otra
 evaluación y prompts que muestran solo la respuesta, sin el concepto.
+
+## Qué cambiamos de v0 a v3 y por qué
+
+| Cambio | Por qué |
+|---|---|
+| Partición sin pares repetidos (14.424 / 3.092 / 3.092) en lugar de 5 particiones al azar | En el CSV original, el 46,1 % de la prueba de v0 ya estaba en el entrenamiento y la exactitud salía inflada |
+| `group_by_length=False` | Con `True`, la evaluación se recorría en otro orden y cada predicción se comparaba con la fila equivocada (0,0014 en vez de 0,8214) |
+| 3 épocas en lugar de 2 | Hay menos filas de entrenamiento; 1.353 pasos son parecidos a los 1.514 de v0 |
+| Una partición fija en lugar de cinco | Cada entrenamiento de Qwen3-4B toma unos 50 minutos en la T4 y no alcanzaban las cinco en una sesión gratuita |
+| Se agregaron v1 (TF-IDF + kNN) y v2 (BETO + LoRA) | El enunciado pide comparar versiones simplificadas; sirven de referencia para saber cuánto aporta el modelo grande |
+
+## Qué se puede afirmar y qué no
+
+Sobre la misma prueba sin duplicados, Qwen3-4B + QLoRA (0,724) supera a BETO + LoRA (0,653) y a TF-IDF + kNN (0,583), con
+una diferencia mayor que el error estándar (unos 0,009). No se puede afirmar que supere al 0,582 de Ramos et al. (2025):
+ellos usan 27.138 propiedades, otra evaluación y prompts sin el concepto. Tampoco hay desviación estándar para v3, que se
+corrió con una sola semilla. Esos tres datos pesan al leer la tabla anterior.
 
 ## Cómo repetirlo
 
