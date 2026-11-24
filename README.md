@@ -14,6 +14,7 @@ Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exa
 | `v0_ejecucion/` | Notebook para correr la versión cruda en Colab |
 | `v1_tfidf/` | Versión simplificada: TF-IDF + vecinos más cercanos |
 | `v2_beto_lora/` | BETO + LoRA: experimentos, notebook para Colab y `resultados.md` |
+| `v3_qwen_qlora/` | Qwen3-4B + QLoRA con el error de v0 corregido y datos limpios, y `resultados.md` |
 
 ## Versión cruda (v0)
 
@@ -49,9 +50,22 @@ No es comparable directamente con el 0,582 del paper: usa 27.138 propiedades y e
 
 Detalle, experimentos y limitaciones en `v2_beto_lora/resultados.md`.
 
-## Pendiente
+## Versión cruda corregida y v3
 
-La versión cruda (v0) todavía no tiene métricas: su entrenamiento en Colab se cortó antes de terminar la partición 0.
+El script crudo (v0) informa 0,0014 de exactitud por un error de alineación: `group_by_length=True` reordena la evaluación y cada
+predicción se compara con la fila equivocada. El mismo modelo, bien alineado, da 0,8214 en su partición con duplicados y 0,7023 en
+los pares nuevos (`v0_ejecucion/resultados.md`). v3 es ese modelo con el error corregido y la partición limpia.
+
+## Comparación final: prueba sin duplicados (3.092 ejemplos)
+
+| Versión | Exactitud | Top-5 | F1 macro |
+|---|---|---|---|
+| v1: TF-IDF + kNN | 0,583 | 0,701 | 0,497 |
+| v2: BETO + LoRA (3 semillas) | 0,653 ± 0,001 | 0,828 ± 0,003 | 0,557 ± 0,001 |
+| v3: Qwen3-4B + QLoRA (1 semilla) | **0,724** | **0,889** | **0,634** |
+
+El 0,582 de Ramos et al. (2025) no es directamente comparable: usa 27.138 propiedades (el CSV del curso trae 31.864 filas), otra
+evaluación y prompts que muestran solo la respuesta, sin el concepto.
 
 ## Uso de IA
 
