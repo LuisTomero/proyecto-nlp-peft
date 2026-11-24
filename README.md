@@ -11,7 +11,7 @@ Sistema de referencia: Ramos et al. (2025), GPT-3.5-turbo ajustado, 0,582 de exa
 |---|---|
 | `datos/` | `CPN120.csv`, entregado por el curso, y la partición sin duplicados (`preparar_datos.py`) |
 | `v0_cruda/` | Primera versión de la IA: el prompt, la respuesta y el script, sin modificaciones |
-| `v0_ejecucion/` | Notebook para correr la versión cruda en Colab |
+| `v0_ejecucion/` | Cómo se corrió la versión cruda, la medición corregida y `resultados.md` |
 | `v1_tfidf/` | Versión simplificada: TF-IDF + vecinos más cercanos |
 | `v2_beto_lora/` | BETO + LoRA: experimentos, notebook para Colab y `resultados.md` |
 | `v3_qwen_qlora/` | Qwen3-4B + QLoRA con el error de v0 corregido y datos limpios, y `resultados.md` |
@@ -66,6 +66,17 @@ los pares nuevos (`v0_ejecucion/resultados.md`). v3 es ese modelo con el error c
 
 El 0,582 de Ramos et al. (2025) no es directamente comparable: usa 27.138 propiedades (el CSV del curso trae 31.864 filas), otra
 evaluación y prompts que muestran solo la respuesta, sin el concepto.
+
+## Cómo repetirlo
+
+v1 corre en cualquier PC con `pandas`, `scipy` y `scikit-learn`. v0, v2 y v3 necesitan una GPU (se usó una Tesla T4 de Colab):
+
+| Versión | Cómo |
+|---|---|
+| v0 | `v0_ejecucion/v0_cruda_colab.ipynb`; la medición corregida, con `v0_ejecucion/evaluar_alineado.py` |
+| v1 | `python datos/preparar_datos.py` y `python v1_tfidf/tfidf_knn.py` |
+| v2 | `v2_beto_lora/beto_lora_colab.ipynb`, con `CPN120.csv` en "Mi unidad" de Drive |
+| v3 | `python v3_qwen_qlora/v3_qwen_qlora.py`, con `CPN120.csv` en la carpeta actual |
 
 ## Uso de IA
 
